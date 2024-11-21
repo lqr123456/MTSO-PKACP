@@ -1,15 +1,15 @@
 function task = MTSO(Tasks, N, T, rmp,nRepeat,ntasks)
 
-    if mod(N, 2) ~= 0 %如果种群大小是奇数，将其变为偶数
+    if mod(N, 2) ~= 0 
         N = N + 1;
     end
 
-    no_of_tasks = ntasks; %获取任务数
-    if no_of_tasks <= 1 %任务数小于1.给出错误提示，要求至少2个任务
+    no_of_tasks = ntasks; 
+    if no_of_tasks <= 1 
         error('At least 2 tasks required for MFEA');
     end
 
-    %计算每个任务的维度，并找到最大维度作为多任务优化的维度
+    
     D = zeros(1, no_of_tasks);
     for i = 1:no_of_tasks
         D(i) = Tasks.D(i);
@@ -18,7 +18,7 @@ function task = MTSO(Tasks, N, T, rmp,nRepeat,ntasks)
 
     %options = optimoptions(@fminunc, 'Display', 'off', 'Algorithm', 'quasi-newton', 'MaxIter', 2); % settings for individual learning
     
-    %bestobj = Inf(1, no_of_tasks); %创建一个向量 bestobj，并将其所有元素初始化为正无穷。
+    %bestobj = Inf(1, no_of_tasks);
  for rep = 1:nRepeat
     %initial 
     tic
@@ -41,9 +41,9 @@ function task = MTSO(Tasks, N, T, rmp,nRepeat,ntasks)
 for k=1:no_of_tasks
     
     Task(k).fobj=Tasks.Fnc{k};
-    UB(k,:)=Tasks.Ub{k}(1:D_multitask);%获取任务1的上限
-    LB(k,:)=Tasks.Lb{k}(1:D_multitask);%获取任务1的下限
-    range(k,:)=UB(k,:)-LB(k,:); % 获取任务1维度的范围
+    UB(k,:)=Tasks.Ub{k}(1:D_multitask);
+    LB(k,:)=Tasks.Lb{k}(1:D_multitask);
+    range(k,:)=UB(k,:)-LB(k,:); 
 
     Task(k).X = repmat(LB(k,:),N,1)+rand(N,D_multitask).* repmat((UB(k,:)-LB(k,:)),N,1);  
     for i=1:N
@@ -64,15 +64,15 @@ for k=1:no_of_tasks
     [Task(k).fitnessBest_f, Task(k).gbest2] = min(Task(k).fitness_f);
     Task(k).Xbest_f = Task(k).Xf(Task(k).gbest2,:);
     
-%     [xxx, y] = sort(Task(k).fitness); %函数值由小到大排序
-%     Task(k).X = Task(k).X(y); %个体也按照由小到大进行排序
+%     [xxx, y] = sort(Task(k).fitness); 
+%     Task(k).X = Task(k).X(y); 
 %     for j = 1:N
-%         Task(k).X(j).factorial_ranks(k) = j; %由于排序factorial_rank就可以这样赋值
+%         Task(k).X(j).factorial_ranks(k) = j; 
 %     end
-%     bestobj(k) = xxx(1); %这一代中对于任务i最好的个体就是第一个个体
+%     bestobj(k) = xxx(1); 
 end
 
-%开始循环
+
 for t = 1:T
     for k=1:no_of_tasks
         Temp=exp(-((t)/T));  %eq.(4)
@@ -290,37 +290,37 @@ for t = 1:T
         
     end
     
-    %知识迁移
-    n=N/5;%1/5的个体
-    d=D_multitask;%个体维度
-    RMP=rand();%知识迁移概率
+    
+    n=N/5;
+    d=D_multitask;
+    RMP=rand();
     
     for k=1:no_of_tasks
-        Task(k).XX=[Task(k).Xm;Task(k).Xf]; %将雌雄个体合并
-        Task(k).fitness=[Task(k).fitness_m,Task(k).fitness_f];%雌雄个体适应度值合并
-        [x,y]=sort(Task(k).fitness);%对适应度值排序
-        Task(k).fitness1=x;%有序的适应度值
-        Task(k).XX1=Task(k).XX(y,:);%有序的适应度值对应的个体XX1
-        Task(k).XX_elite=Task(k).XX1(1:n,:);%挑选1/5作为精英个体
+        Task(k).XX=[Task(k).Xm;Task(k).Xf]; 
+        Task(k).fitness=[Task(k).fitness_m,Task(k).fitness_f];
+        [x,y]=sort(Task(k).fitness);
+        Task(k).fitness1=x;
+        Task(k).XX1=Task(k).XX(y,:);
+        Task(k).XX_elite=Task(k).XX1(1:n,:);
         Task(k).fitness_elite=Task(k).fitness1(1:n);
         
-        %将精英个体归一化
+       
     
         Task(k).XXX=(Task(k).XX_elite - LB(k,:))./range(k,:);
     end
     
     for k=1:no_of_tasks
-        if RMP<rmp%达到要求，进行任务间的知识迁移
-            if rand<HMCR%随机数小于HMCR，迁移精英解的知识
+        if RMP<rmp
+            if rand<HMCR
                 
-                k0 = ceil(rand*no_of_tasks);%随机挑选一个任务
-                while k0 == k%保证挑选的不是自己
+                k0 = ceil(rand*no_of_tasks);
+                while k0 == k
                     k0 = ceil(rand*no_of_tasks);
                 end
-                a = ceil(rand*n);%确定迁移个体的个数
-                b = ceil(rand*d);%确定迁移个体的维度
-                Task(k).XXX(a,b) = Task(k0).XXX(a,b);%知识迁移
-                Task(k).XX_elite1=(Task(k).XXX.*range(k,:))+LB(k,:);%反归一化
+                a = ceil(rand*n);
+                b = ceil(rand*d);
+                Task(k).XXX(a,b) = Task(k0).XXX(a,b);
+                Task(k).XX_elite1=(Task(k).XXX.*range(k,:))+LB(k,:);
                 for i=1:n
 
                     for z=1:D_multitask
@@ -335,21 +335,21 @@ for t = 1:T
                     % Task(k).XX_elite1(i,:)=repmat(LB(k,:),1,1)+rand(1,D_multitask).* repmat((UB(k,:)-LB(k,:)),1,1);
                     %end
 
-                    f(i)=feval(Task(k).fobj,Task(k).XX_elite1(i,:));   %评估适应度值
+                    f(i)=feval(Task(k).fobj,Task(k).XX_elite1(i,:));   
                 end
                 
-                Task(k).fit=[Task(k).fitness_elite,f];%合并迁移前后适应度值
-                Task(k).XX_elite2=[Task(k).XX_elite;Task(k).XX_elite1];%合并迁移前后精英解
+                Task(k).fit=[Task(k).fitness_elite,f];
+                Task(k).XX_elite2=[Task(k).XX_elite;Task(k).XX_elite1];
                 
-                [fitk,index]=sort(Task(k).fit);%对合并后的适应度值进行排序
-                Task(k).fit1=fitk;%有序的适应度值
-                Task(k).XX_elite3=Task(k).XX_elite2(index,:);%有序的适应度值对应的个体XX_elite3
-                Task(k).XX_elite=Task(k).XX_elite3(1:n,:);%挑选N/5作为精英个体
+                [fitk,index]=sort(Task(k).fit);
+                Task(k).fit1=fitk;
+                Task(k).XX_elite3=Task(k).XX_elite2(index,:);
+                Task(k).XX_elite=Task(k).XX_elite3(1:n,:);
                 
                 Task(k).fitness1(1:n)=Task(k).fit1(1:n);
                 Task(k).XX1(1:n,:)=Task(k).XX_elite;
 
-                %回归原来顺序
+                
                 Task(k).XX(y,:)=Task(k).XX1;
                 Task(k).fitness(y)=Task(k).fitness1;
             else
