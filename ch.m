@@ -1,11 +1,11 @@
 
-%% 10种混沌映射类型选择，1-10分别为，tent、Logistic、Cubic、chebyshev、Piecewise、sinusoidal、Sine,ICMIC, Circle,Bernoulli
-function result = ch(index,N)%索引，种群数量，维度
+%% 1-10鍒嗗埆涓猴紝tent銆丩ogistic銆丆ubic銆乧hebyshev銆丳iecewise銆乻inusoidal銆丼ine,ICMIC, Circle,Bernoulli
+function result = ch(index,N)
 
 switch index
     case 1
-        % tent映射
-        tent=0.4;  %tent混沌系数
+        % tent
+        tent=0.4;  
         Tent(1)=rand;
         for i=1:N-1
             
@@ -19,8 +19,8 @@ switch index
         result = Tent;
         
     case 2
-        % Logistic映射
-        miu=4;  %混沌系数
+        % Logistic
+        miu=4;  
         Logistic(1)=rand;
         for i=1:N-1
             
@@ -30,8 +30,8 @@ switch index
         result = Logistic;
         
     case 3
-        % Cubic映射
-        cubic=2.59;%混沌系数
+        % Cubic
+        cubic=2.59;%
         Cubic(1)=rand;
         for i=1:N-1
             
@@ -41,8 +41,8 @@ switch index
         result = Cubic;
         
     case 4
-        %chebyshev映射
-        chebyshev=5;%混沌系数
+        %chebyshev
+        chebyshev=5;
         Chebyshev(1)=rand;
         for i=1:N-1
             
@@ -52,7 +52,7 @@ switch index
         result = Chebyshev;
         
     case 5
-        %Piecewise映射
+        %Piecewise
         p=0.4;
         Piecewise(1)=rand;
         for i=1:N-1
@@ -72,7 +72,7 @@ switch index
         
         
     case 6
-        %sinusoidal映射
+        %sinusoidal
         sinusoidal=2.3;
         Sinusoidal(1)=rand;
         for i=1:N-1
@@ -83,7 +83,7 @@ switch index
         result = Sinusoidal;
         
     case 7
-        %Sine映射
+        %Sine
         sine=4;
         Sine(1)=rand;
         for i=1:N-1
@@ -95,7 +95,7 @@ switch index
         
         
     case 8
-        %         ICMIC 映射（无限折叠迭代混沌映射）
+        %         ICMIC 
         icmic=2;
         ICMIC(1)=rand;
         for i=1:N-1
@@ -107,7 +107,7 @@ switch index
         
         
     case 9
-        % Circle映射
+        % Circle
         a = 0.5; b=2.2;
         Circle(1)=rand;
         for i=1:N-1
@@ -117,7 +117,7 @@ switch index
         end
         result = Circle;
     case 10
-        %Bernoulli映射
+        %Bernoulli
         lammda = 0.4;
         Bernoulli(1)=rand;
         for i=1:N
@@ -132,7 +132,7 @@ switch index
         result = Bernoulli;
         
     case 11
-        %Gaussian映射
+        %Gaussian
         Gaussian(1)=rand;
         for i=1:N
             
@@ -143,7 +143,7 @@ switch index
         result=Gaussian;
         
     case 12
-        %Singer映射
+        %Singer
         u=1.073;
         Singer(1)=rand;
         for i=1:N
